@@ -34,8 +34,12 @@ pipeline
 
         stage('Build Docker Image'){
             steps{
-                sh 'cp /var/lib/jenkins/workspace/$JOB_NAME/target/abctechnologies.war/var/lib/jenkins/workspace/$JOB_NAME/abctechnologies.war'
-                sh 'docker build -t mahoro01/abc_tech:$BUILD_NUMBER .'
+                // sh 'cp /var/lib/jenkins/workspace/$JOB_NAME/target/abctechnologies.war/var/lib/jenkins/workspace/$JOB_NAME/abctechnologies.war'
+                // sh 'docker build -t mahoro01/abc_tech:$BUILD_NUMBER .'
+                sh '''
+                cp target/ABCtechnlogies-1.0.war abctechnologies.war
+                docker build -t mytomcatapp .
+                '''
             }
 
         }
