@@ -86,15 +86,13 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                // Ensure the WAR file exists before copying
-                sh 'ls target/ABCtechnlogies-1.0.war'
-                sh '''
-                cp target/ABCtechnlogies-1.0.war abctechnologies.war
-                docker build -t mytomcatapp .
-                '''
-            }
-        }
+    steps {
+        sh 'ls -l target/'  // List all files in the target directory to confirm the WAR file
+        sh 'cp target/ABCtechnologies-1.0.war abctechnologies.war'  // Copy the WAR file
+        sh 'docker build -t mytomcatapp .'  // Build Docker image
+    }
+}
+
 
         stage('Push Docker Image') {
             steps {
