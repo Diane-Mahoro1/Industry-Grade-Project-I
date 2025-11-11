@@ -88,8 +88,8 @@ pipeline {
         stage('Build Docker Image') {
     steps {
         sh 'ls -l target/'  // List all files in the target directory to confirm the WAR file
-        sh 'cp target/ABCtechnologies-1.0.war abctechnologies.war'  // Copy the WAR file
-        sh 'docker build -t mytomcatapp .'  // Build Docker image
+        sh 'cp target/*.war abctechnologies.war'  // Copy the WAR file
+        sh 'docker $IMAGE_NAME:$BUILD_NUMBER .'  // Build Docker image
     }
 }
 
@@ -97,7 +97,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
-                    sh 'docker push mahoro01/abc_tech:$BUILD_NUMBER'
+                    sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
                 }
             }
         }
