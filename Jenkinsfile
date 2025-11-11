@@ -60,6 +60,11 @@
 // }
 pipeline {
     agent any
+    environment {
+        IMAGE_NAME = "mahoro01/abc_tech"
+    }
+
+
     stages {
         stage('Code checkout') {
             steps {
@@ -89,7 +94,7 @@ pipeline {
     steps {
         sh 'ls -l target/'  // List all files in the target directory to confirm the WAR file
         sh 'cp target/*.war abctechnologies.war'  // Copy the WAR file
-        sh 'docker $IMAGE_NAME:$BUILD_NUMBER .'  // Build Docker image
+        sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'  // Build Docker image
     }
 }
 
@@ -107,5 +112,14 @@ pipeline {
                 sh 'docker run -itd -P mahoro01/abc_tech:$BUILD_NUMBER || true'
             }
         }
+    }
+}
+stage('Cleanup') {
+    steps {
+        sh '''
+            echo "Cleaning up Docker resources..."
+            docker system prune -af || true
+            docker volume prune -f || true
+        '''
     }
 }
