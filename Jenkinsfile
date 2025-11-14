@@ -57,13 +57,77 @@
 //             }
 //         }
 //     }
+// // }
+// pipeline {
+//     agent any
+//     environment {
+//         IMAGE_NAME = "mahoro01/abc_tech"
+//     }
+
+
+//     stages {
+//         stage('Code checkout') {
+//             steps {
+//                 git branch: 'main', url: 'https://github.com/Diane-Mahoro1/Industry-Grade-Project-I.git'
+//             }
+//         }
+
+//         stage('Code compile') {
+//             steps {
+//                 sh 'mvn compile'
+//             }
+//         }
+
+//         stage('Test') {
+//             steps {
+//                 sh 'mvn test'
+//             }
+//         }
+
+//         stage('Build') {
+//             steps {
+//                 sh 'mvn package'
+//             }
+//         }
+
+//         stage('Build Docker Image') {
+//     steps {
+//         sh 'ls -l target/'  // List all files in the target directory to confirm the WAR file
+//         sh 'cp target/*.war abctechnologies.war'  // Copy the WAR file
+//         sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'  // Build Docker image
+//     }
+// }
+
+
+//         stage('Push Docker Image') {
+//             steps {
+//                 withDockerRegistry([credentialsId: "mahoro01", url: ""]) {
+//                     sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
+//                 }
+//             }
+//         }
+
+//         stage('Deploy as Container') {
+//             steps {
+//                 sh 'docker run -itd -P mahoro01/abc_tech:$BUILD_NUMBER || true'
+//             }
+//         }
+//     }
+// }
+// stage('Cleanup') {
+//     steps {
+//         sh '''
+//             echo "Cleaning up Docker resources..."
+//             docker system prune -af || true
+//             docker volume prune -f || true
+//         '''
+//     }
 // }
 pipeline {
     agent any
     environment {
         IMAGE_NAME = "mahoro01/abc_tech"
     }
-
 
     stages {
         stage('Code checkout') {
@@ -91,13 +155,12 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-    steps {
-        sh 'ls -l target/'  // List all files in the target directory to confirm the WAR file
-        sh 'cp target/*.war abctechnologies.war'  // Copy the WAR file
-        sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'  // Build Docker image
-    }
-}
-
+            steps {
+                sh 'ls -l target/'  // Verify the WAR file exists
+                sh 'cp target/*.war abctechnologies.war'
+                sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+            }
+        }
 
         stage('Push Docker Image') {
             steps {
@@ -109,17 +172,26 @@ pipeline {
 
         stage('Deploy as Container') {
             steps {
-                sh 'docker run -itd -P mahoro01/abc_tech:$BUILD_NUMBER || true'
+                // Stop and remove previous container if exists
+                sh '''
+                    CONTAINER_ID=$(docker ps -q -f name=abc_tech || true)
+                    if [ ! -z "$CONTAINER_ID" ]; then
+                        docker stop $CONTAINER_ID
+                        docker rm $CONTAINER_ID
+                    fi
+                    docker run -d -p 8080:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
+                '''
             }
         }
-    }
-}
-stage('Cleanup') {
-    steps {
-        sh '''
-            echo "Cleaning up Docker resources..."
-            docker system prune -af || true
-            docker volume prune -f || true
-        '''
+
+        stage('Cleanup') {
+            steps {
+                sh '''
+                    echo "Cleaning up Docker resources..."
+                    docker system prune -af || true
+                    docker volume prune -f || true
+                '''
+            }
+        }
     }
 }
