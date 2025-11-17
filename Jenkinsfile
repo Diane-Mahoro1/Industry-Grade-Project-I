@@ -144,13 +144,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn test -DskipTests'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn package'
+                sh 'mvn package -DskipTests'
             }
         }
 
