@@ -253,20 +253,47 @@ pipeline {
             }
         }
 
+        // stage('Deploy as Container') {
+        //     steps {
+        //         timeout(time: 3, unit: 'MINUTES') {
+        //             sh '''
+        //                 CONTAINER_ID=$(docker ps -q -f name=abc_tech || true)
+        //                 if [ ! -z "$CONTAINER_ID" ]; then
+        //                     docker stop $CONTAINER_ID
+        //                     docker rm $CONTAINER_ID
+        //                 fi
+        //                 docker run -d -p 8080:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
+        //             '''
+        //         }
+        //     }
+        // }
         stage('Deploy as Container') {
-            steps {
-                timeout(time: 3, unit: 'MINUTES') {
-                    sh '''
-                        CONTAINER_ID=$(docker ps -q -f name=abc_tech || true)
-                        if [ ! -z "$CONTAINER_ID" ]; then
-                            docker stop $CONTAINER_ID
-                            docker rm $CONTAINER_ID
-                        fi
-                        docker run -d -p 8080:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
-                    '''
-                }
-            }
-        }
+    steps {
+        sh '''
+            echo "Stopping any container using port 8080..."
+
+            # Find and stop container using port 8080
+            PORT_CONTAINER=$(docker ps -q --filter "publish=8080")
+
+            if [ ! -z "$PORT_CONTAINER" ]; then
+                echo "Stopping container using port 8080: $PORT_CONTAINER"
+                docker stop $PORT_CONTAINER
+                docker rm $PORT_CONTAINER
+            fi
+
+            # Also remove abc_tech if exists
+            CONTAINER_ID=$(docker ps -aq -f name=abc_tech)
+            if [ ! -z "$CONTAINER_ID" ]; then
+                docker stop $CONTAINER_ID || true
+                docker rm $CONTAINER_ID || true
+            fi
+
+            # Now deploy new container
+            docker run -d -p 8080:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
+        '''
+    }
+}
+
 
         stage('Cleanup') {
             steps {
