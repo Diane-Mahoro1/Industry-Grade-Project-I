@@ -191,7 +191,7 @@ pipeline {
                         fi
 
                         # Deploy new container
-                        docker run -d -p 8080:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
+                        docker run -d -p 8081:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
                     '''
                 }
             }
