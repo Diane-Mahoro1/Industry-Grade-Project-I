@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abc-technology-deployment
+  namespace: abctechnologies
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: abc-technology
+  template:
+    metadata:
+      labels:
+        app: abc-technology
+    spec:
+      containers:
+      - name: abc-technology
+        image: mahoro01/abc_tech:38
+        ports:
+        - containerPort: 8080
