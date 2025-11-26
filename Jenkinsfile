@@ -169,38 +169,38 @@ pipeline {
             }
         }
 
-        stage('Deploy as Container') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    sh '''
-                        echo "Stopping any container using port 8080..."
+        // stage('Deploy as Container') {
+        //     steps {
+        //         timeout(time: 5, unit: 'MINUTES') {
+        //             sh '''
+        //                 echo "Stopping any container using port 8080..."
 
-                        # Stop any container using port 8080
-                        PORT_CONTAINER=$(docker ps -q --filter "publish=8080")
-                        if [ ! -z "$PORT_CONTAINER" ]; then
-                            echo "Stopping container using port 8080: $PORT_CONTAINER"
-                            docker stop $PORT_CONTAINER
-                            docker rm $PORT_CONTAINER
-                        fi
+        //                 # Stop any container using port 8080
+        //                 PORT_CONTAINER=$(docker ps -q --filter "publish=8080")
+        //                 if [ ! -z "$PORT_CONTAINER" ]; then
+        //                     echo "Stopping container using port 8080: $PORT_CONTAINER"
+        //                     docker stop $PORT_CONTAINER
+        //                     docker rm $PORT_CONTAINER
+        //                 fi
 
-                        # Remove any existing container named abc_tech
-                        CONTAINER_ID=$(docker ps -aq -f name=abc_tech)
-                        if [ ! -z "$CONTAINER_ID" ]; then
-                            docker stop $CONTAINER_ID || true
-                            docker rm $CONTAINER_ID || true
-                        fi
+        //                 # Remove any existing container named abc_tech
+        //                 CONTAINER_ID=$(docker ps -aq -f name=abc_tech)
+        //                 if [ ! -z "$CONTAINER_ID" ]; then
+        //                     docker stop $CONTAINER_ID || true
+        //                     docker rm $CONTAINER_ID || true
+        //                 fi
 
-                        # Deploy new container
-                        docker run -d -p 8081:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
-                    '''
-                }
-            }
-        }
+        //                 # Deploy new container
+        //                 docker run -d -p 8081:8080 --name abc_tech $IMAGE_NAME:$BUILD_NUMBER
+        //             '''
+        //         }
+        //     }
+        // }
         stage('Deploy to Kubernetes via Ansible') {
     steps {
         sh '''
-            cd ~/ansible/plabooks
-            ansible-playbook -i inventory main.yaml
+            cd ~/ansible/playbooks
+            ansible-playbook -i localhost, -c local main.yaml
         '''
     }
 }
@@ -218,4 +218,3 @@ pipeline {
         }
     }
 }
-C:\Users\mahor\Downloads\\Jenkinsfile
