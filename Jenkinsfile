@@ -199,7 +199,7 @@ pipeline {
         stage('Deploy to Kubernetes via Ansible') {
           steps {
         sh '''
-            cd ~/ansible/Playbooks
+            cd ansible/Playbooks
             ansible-playbook -i localhost, -c local main.yaml
         '''
     }
