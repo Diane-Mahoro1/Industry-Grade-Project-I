@@ -12,11 +12,11 @@
 
 
     - name: Apply deployment (update image)
-      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/deployment.yaml --validate=false
+      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/deployment.yaml --validate=false
 
 
     - name: Apply service
-      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/service.yaml --validate=false
+      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/service.yaml --validate=false
 
 
     - name: Wait for pods to be ready
