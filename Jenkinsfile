@@ -196,6 +196,14 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Kubernetes via Ansible') {
+    steps {
+        sh '''
+            cd ~/ansible/plabooks
+            ansible-playbook -i inventory main.yaml
+        '''
+    }
+}
 
         stage('Cleanup') {
             steps {
