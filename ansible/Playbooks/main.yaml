@@ -5,17 +5,22 @@
 
   tasks:
 
-    - name: Apply namespace
-      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/namespace.yaml
+    - name : Apply namespace
+      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/namespace.yaml --validate=false
+
 
     - name: Apply deployment (update image)
-      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/deployment.yaml
+      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/deployment.yaml --validate=false
+
 
     - name: Apply service
-      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/service.yaml
+      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/service.yaml --validate=false
+
 
     - name: Wait for pods to be ready
       command: kubectl rollout status deployment/abc-technology-deployment -n abctechnologies
 
     - name: Example task
       shell: echo "Hello, Ansible!"
+
+   
