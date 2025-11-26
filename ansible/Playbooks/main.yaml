@@ -1,7 +1,9 @@
 ---
 - name: Deploy ABC Technology App to Kubernetes
   hosts: localhost
-  become: yes
+  connection: local
+  environment:
+    KUBECONFIG: /home/ubuntu/.kube/config
 
   tasks:
 
