@@ -218,4 +218,3 @@ pipeline {
         }
     }
 }
-C:\Users\mahor\Downloads\\Jenkinsfile
