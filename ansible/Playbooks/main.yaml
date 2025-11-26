@@ -1,0 +1,18 @@
+---
+- name: Deploy ABC Technology App to Kubernetes
+  hosts: local
+  become: yes
+
+  tasks:
+
+    - name: Apply namespace
+      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/namespace.yaml
+
+    - name: Apply deployment (update image)
+      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/deployment.yaml
+
+    - name: Apply service
+      command: kubectl apply -f /home/ubuntu/Industry-Project-I/k8s/service.yaml
+
+    - name: Wait for pods to be ready
+      command: kubectl rollout status deployment/abc-technology-deployment -n abctechnologies
