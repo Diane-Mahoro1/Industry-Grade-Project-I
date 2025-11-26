@@ -1,6 +1,6 @@
 ---
 - name: Deploy ABC Technology App to Kubernetes
-  hosts: local
+  hosts: localhost
   become: yes
 
   tasks:
@@ -16,3 +16,6 @@
 
     - name: Wait for pods to be ready
       command: kubectl rollout status deployment/abc-technology-deployment -n abctechnologies
+
+    - name: Example task
+      shell: echo "Hello, Ansible!"
