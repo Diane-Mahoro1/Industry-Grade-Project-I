@@ -1,28 +1,58 @@
+# ---
+# - name: Deploy ABC Technology App to Kubernetes
+#   hosts: localhost
+#   connection: local
+#   environment:
+#     KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
+
+#   tasks:
+
+#     - name : Apply namespace
+#       command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/namespace.yaml --validate=false
+
+
+#     - name: Apply deployment (update image)
+#       command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/deployment.yaml --validate=false
+
+
+#     - name: Apply service
+#       command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/service.yaml --validate=false
+
+
+#     - name: Wait for pods to be ready
+#       command: kubectl rollout status deployment/abc-technology-deployment -n abctechnologies
+
+#     - name: Example task
+#       shell: echo "Hello, Ansible!"
+
 ---
 - name: Deploy ABC Technology App to Kubernetes
   hosts: localhost
   connection: local
+
   environment:
     KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
 
   tasks:
 
-    - name : Apply namespace
-      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/namespace.yaml --validate=false
+    - name: Apply namespace
+      command: kubectl apply -f k8s/namespace.yaml --validate=false
+      args:
+        chdir: /var/lib/jenkins/workspace/Industry-Grade-Project-I
 
-
-    - name: Apply deployment (update image)
-      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/deployment.yaml --validate=false
-
+    - name: Apply deployment
+      command: kubectl apply -f k8s/deployment.yaml --validate=false
+      args:
+        chdir: /var/lib/jenkins/workspace/Industry-Grade-Project-I
 
     - name: Apply service
-      command: kubectl apply -f /home/ubuntu/Industry-Grade-Project-I/k8s/service.yaml --validate=false
+      command: kubectl apply -f k8s/service.yaml --validate=false
+      args:
+        chdir: /var/lib/jenkins/workspace/Industry-Grade-Project-I
 
-
-    - name: Wait for pods to be ready
+    - name: Wait for deployment rollout
       command: kubectl rollout status deployment/abc-technology-deployment -n abctechnologies
 
-    - name: Example task
-      shell: echo "Hello, Ansible!"
-
-   
+    - name: Show success message
+      debug:
+        msg: "Kubernetes Deployment Completed Successfully!"
