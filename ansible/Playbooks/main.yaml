@@ -1,9 +1,9 @@
-# ---
-# - name: Deploy ABC Technology App to Kubernetes
-#   hosts: localhost
-#   connection: local
-#   environment:
-#     KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
+---
+- name: Deploy ABC Technology App to Kubernetes
+  hosts: localhost
+  connection: local
+  environment:
+    KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
 
 #   tasks:
 
@@ -24,15 +24,15 @@
 
 #     - name: Example task
 #       shell: echo "Hello, Ansible!"
+# --
+#   - name: Deploy ABC Technology App to Kubernetes
+# hosts: localhost
+# connection: local
 
-name: Deploy ABC Technology App to Kubernetes
-hosts: localhost
-connection: local
+# environment:
+#   KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
 
-environment:
-  KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
-
-tasks:
+  tasks:
 
   - name: Apply namespace
     command: kubectl apply -f k8s/namespace.yaml --validate=false
