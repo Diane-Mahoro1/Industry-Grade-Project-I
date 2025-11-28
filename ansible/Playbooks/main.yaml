@@ -3,7 +3,7 @@
   hosts: localhost
   connection: local
   environment:
-    KUBECONFIG: /home/ubuntu/.kube/config
+    KUBECONFIG: "{{ lookup('env','KUBECONFIG') }}"
 
   tasks:
 
