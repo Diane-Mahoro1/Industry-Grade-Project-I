@@ -199,6 +199,7 @@ pipeline {
         stage('Deploy to Kubernetes via Ansible') {
           steps {
         sh '''
+            export KUBECONFIG=/var/lib/jenkins/.kube/config
             cd ansible/Playbooks
             ansible-playbook -i localhost, -c local main.yaml
         '''
