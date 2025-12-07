@@ -106,6 +106,74 @@
 //         }
 //     }
 // }
+// pipeline {
+//     agent any
+
+//     environment {
+//         IMAGE_NAME = "mahoro01/abc_tech"
+//     }
+
+//     stages {
+
+//         stage('Code checkout') {
+//             steps {
+//                 git branch: 'main', url: 'https://github.com/Diane-Mahoro1/Industry-Grade-Project-I.git'
+//             }
+//         }
+
+//         stage('Compile') {
+//             steps {
+//                 sh 'mvn compile'
+//             }
+//         }
+
+//         stage('Test') {
+//             steps {
+//                 sh 'mvn test -DskipTests'
+//             }
+//         }
+
+//         stage('Build Package') {
+//             steps {
+//                 sh 'mvn package -DskipTests'
+//             }
+//         }
+
+//         stage('Build Docker Image') {
+//             steps {
+//                 sh 'cp target/*.war abctechnologies.war'
+//                 sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+//             }
+//         }
+
+//         stage('Push Docker Image') {
+//             steps {
+//                 withDockerRegistry([credentialsId: "mahoro01", url: ""]) {
+//                     sh "docker push $IMAGE_NAME:$BUILD_NUMBER"
+//                 }
+//             }
+//         }
+
+//         stage('Deploy to Kubernetes via Ansible') {
+//             steps {
+//                 sh '''
+//                     export KUBECONFIG=/var/lib/jenkins/.kube/config
+//                     cd $WORKSPACE/ansible/Playbooks
+//                     ansible-playbook -i localhost, -c local main.yaml
+//                 '''
+//             }
+//         }
+
+//         stage('Cleanup') {
+//             steps {
+//                 sh '''
+//                     docker system prune -af || true
+//                     docker volume prune -f || true
+//                 '''
+//             }
+//         }
+//     }
+// }
 pipeline {
     agent any
 
@@ -140,6 +208,7 @@ pipeline {
         }
 
         stage('Build Docker Image') {
+            agent { label 'docker-node' } // Run only this stage on your node
             steps {
                 sh 'cp target/*.war abctechnologies.war'
                 sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
@@ -147,6 +216,7 @@ pipeline {
         }
 
         stage('Push Docker Image') {
+            agent { label 'docker-node' } // Also run push on the same node
             steps {
                 withDockerRegistry([credentialsId: "mahoro01", url: ""]) {
                     sh "docker push $IMAGE_NAME:$BUILD_NUMBER"
@@ -165,6 +235,7 @@ pipeline {
         }
 
         stage('Cleanup') {
+            agent { label 'docker-node' } // Cleanup Docker resources on the same node
             steps {
                 sh '''
                     docker system prune -af || true
